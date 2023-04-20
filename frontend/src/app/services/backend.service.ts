@@ -13,4 +13,8 @@ export class BackendService {
   Login(cuerpo: any) {
     return this.http.post(`${this.URL}/login`, cuerpo);
   }
+
+  Registro(cuerpo: any) {
+    return this.http.post(`${this.URL}/registro`, cuerpo);
+  }
 }
