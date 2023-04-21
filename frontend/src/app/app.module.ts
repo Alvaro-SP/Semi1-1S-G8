@@ -8,13 +8,15 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { BarraSuperiorComponent } from './components/barra-superior/barra-superior.component';
 import { FormsModule } from '@angular/forms';
 import { WebcamModule } from 'ngx-webcam';
+import { ChatfriendsComponent } from './components/chatfriends/chatfriends.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistroComponent,
-    BarraSuperiorComponent
+    BarraSuperiorComponent,
+    ChatfriendsComponent
   ],
   imports: [
     BrowserModule,
