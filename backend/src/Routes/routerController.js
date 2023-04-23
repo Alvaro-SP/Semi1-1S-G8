@@ -5,4 +5,5 @@ const control = require('../Controllers/indexControllers')
 
 router.get("/", control.prueba)
 router.post("/registro", control.registro)
+router.post("/login", control.login)
 module.exports = router

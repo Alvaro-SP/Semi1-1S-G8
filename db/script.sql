@@ -8,7 +8,6 @@ USE `mydb`;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`usuarios` (
   `id` INT NOT NULL,
-  `usuario` VARCHAR(100) NOT NULL,
   `nombre_completo` VARCHAR(100) NOT NULL,
   `dpi` VARCHAR(45) NOT NULL,
   `foto` TEXT NOT NULL,

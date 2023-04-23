@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   }
 
   cuerpo: any = {
-    Usuario: '',
+    Correo: '',
     Password: '',
     Foto: ''
   }
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
   img: string = ''
 
   Login() {
-    if (this.cuerpo.Usuario == "" || (this.cuerpo.Password == "" && this.cuerpo.Foto == "")) {
+    if (this.cuerpo.Correo == "" || (this.cuerpo.Password == "" && this.cuerpo.Foto == "")) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -72,15 +72,15 @@ export class LoginComponent implements OnInit {
         console.log(resp)
         if (resp.Res) {
 
-          sessionStorage.setItem("usuario", this.cuerpo.Usuario)
-          this.router.navigate(['inicio'])
+          sessionStorage.setItem("usuario", resp.token)
+          alert("Todo Ok")
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: 'Credenciales incorrectas!',
           })
-          this.cuerpo.Usuario = ""
+          this.cuerpo.Correo = ""
           this.cuerpo.Password = ""
           this.cuerpo.Foto = ""
         }
