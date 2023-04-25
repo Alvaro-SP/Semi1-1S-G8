@@ -33,7 +33,7 @@ var translate = new AWS.Translate({
 const config = {
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'Dokyterry*2',
     database: 'mydb'
 }
 
@@ -452,6 +452,33 @@ exports.obtenerComentarios = async (req, res) => {
                 return res.jsonp({ Res: true, comentarios: result })
             })
 
+        })
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
+
+}
+
+exports.traducir = async (req, res) => {
+    const { descripcion, id, idioma } = req.body
+
+    try {
+        const params2 = {
+            SourceLanguageCode: 'auto',
+            TargetLanguageCode: idioma,
+            Text: descripcion
+        }
+        translate.translateText(params2, (err2, data2) => {
+            cadena = ""
+            if (err2) {
+                cadena += `${descripcion}`;
+            } else {
+                cadena += `${data2.TranslatedText}`;
+            }
+            console.log(cadena)
+            res.jsonp({ Res: true, descripcion: cadena })
         })
     } catch (e) {
         console.log("e")

@@ -14,6 +14,7 @@ export class ComentariosComponent implements OnInit {
   @Input()
   id: number = 0
 
+  verComentarios = false;
 
   comentarios: any;
 
@@ -24,6 +25,10 @@ export class ComentariosComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerComentarios()
     console.log(this.comentarios)
+  }
+
+  ver(){
+    this.verComentarios = !this.verComentarios;
   }
 
 

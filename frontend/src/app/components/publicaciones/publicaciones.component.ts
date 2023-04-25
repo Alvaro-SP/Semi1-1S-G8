@@ -129,6 +129,7 @@ export class PublicacionesComponent implements OnInit {
             title: 'Publicado',
             text: 'Se ha publicado tu comentario',
           })
+          this.obtenerPublicaciones();
         } else {
           Swal.fire({
             icon: 'error',
@@ -188,6 +189,7 @@ export class PublicacionesComponent implements OnInit {
             title: 'Publicado',
             text: 'Se ha publicado tu fotografía',
           })
+          this.obtenerPublicaciones();
         } else {
           Swal.fire({
             icon: 'error',
@@ -204,6 +206,56 @@ export class PublicacionesComponent implements OnInit {
         })
       }
     )
+  }
+
+
+  async traducir(id: number, descripcion: string, pub:any){
+    const { value: idioma } = await Swal.fire({
+      title: 'Idioma a traducir',
+      input: 'select',
+      inputOptions: {
+        es: 'Español',
+        en: 'Inglés',
+        fr: 'Francés',
+        pt: 'Portugués'
+      },
+      inputPlaceholder: 'Selecciona al idioma a traducir',
+      showCancelButton: true,
+    })
+
+    if (idioma) {
+      let traduc = {
+        id: id,
+        descripcion: descripcion,
+        idioma: idioma
+      }
+      this.backend.traducir(traduc).subscribe(
+        res => {
+          const resp = JSON.parse(JSON.stringify(res))
+          if (resp.Res) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Publicado',
+              text: 'Se ha traducido la publicación seleccionada',
+            })
+            pub.descripcion = resp.descripcion
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Ocurrio un error',
+            })
+          }
+        },
+        err => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Ocurrio un error!',
+          })
+        }
+      )
+    }
   }
 
 }

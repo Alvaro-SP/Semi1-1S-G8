@@ -1,8 +1,17 @@
-<a  style="cursor:pointer"><h2>Comentarios:</h2></a>
+<a (click)="ver()" style="cursor:pointer"><h2>{{ !verComentarios ? "Ver comentarios ..." : "Comentarios:"}}</h2></a>
 
-<ng-container *ngFor="let comentario of comentarios">
-  <div class="post-comment">
-    <img src={{comentario.foto}} alt="" class="profile-photo-sm">
-    <p><a href="timeline.html" class="profile-link">{{comentario.nombre_usuario}}</a><i class="em em-laughing"></i> {{comentario.descripcion}} </p>
-  </div>
+<ng-container *ngIf="verComentarios">
+  <ng-container *ngIf="comentarios.length > 0; else NoHay">
+    <ng-container *ngFor="let comentario of comentarios">
+      <div class="post-comment">
+        <img src={{comentario.foto}} alt="" class="profile-photo-sm">
+        <p><a href="timeline.html" class="profile-link">{{comentario.nombre_usuario}}</a><i class="em em-laughing"></i> {{comentario.descripcion}} </p>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-template #NoHay>
+    <p class="text-muted">No hay comentarios por el momento</p>
+  </ng-template>
 </ng-container>
+
+

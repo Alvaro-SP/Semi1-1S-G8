@@ -53,18 +53,18 @@ body{
   top: 0;
 }
 
-.post-content .post-container .post-detail .post-comment{
+.post-comment{
   display: inline-flex;
   margin: 10px auto;
   width: 100%;
 }
 
-.post-content .post-container .post-detail .post-comment img.profile-photo-sm{
+.post-comment img.profile-photo-sm{
   margin-right: 10px;
 }
 
 
-.post-content .post-container .post-detail .post-comment .form-control{
+.post-comment .form-control{
   height: 30px;
   border: 1px solid #ccc;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
@@ -75,7 +75,7 @@ body{
   min-width: 0;
 }
 
-.post-content .post-container .post-detail .post-comment button{
+.post-comment button{
   color: cornflowerblue;
   background-color: transparent;
   border: none;

@@ -37,4 +37,8 @@ export class BackendService {
   obtenerComentarios(id: any) {
     return this.http.get(`${this.URL}/obtenerComentarios/${id}`);
   }
+
+  traducir(cuerpo: any) {
+    return this.http.post(`${this.URL}/traducir`, cuerpo);
+  }
 }

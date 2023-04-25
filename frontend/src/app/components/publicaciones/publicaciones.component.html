@@ -27,7 +27,7 @@
             <ng-container >
               <div *ngFor="let publicacion of this.publicaciones">
 
-              
+
               <div class="post-content">
 
                 <div class="post-container">
@@ -51,6 +51,10 @@
 
                     </div>
 
+                    <div class="reaction" *ngIf='publicacion.descripcion != ""'>
+                      <a class="btn text-blue" (click)="traducir(publicacion.id, publicacion.descripcion, publicacion)" style="cursor:pointer"><i class="fa-solid fa-language"></i> Traducir</a>
+                    </div>
+
                     <div class="line-divider"></div>
                     <div class="post-text">
                       <p>{{publicacion.descripcion}}</p>
@@ -59,7 +63,7 @@
                     <img src={{publicacion.foto_pub}} alt="post-image" class="img-responsive post-image">
                     <hr>
 
-                    
+
                     <app-comentarios [id]="publicacion.id_pub" ></app-comentarios>
 
                     <div class="post-comment">
