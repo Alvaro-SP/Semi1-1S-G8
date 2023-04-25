@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class BackendService {
 
   constructor(private http: HttpClient) { }
-  
+
   URL: string = "http://localhost:4000"
 
   Login(cuerpo: any) {
@@ -16,5 +16,29 @@ export class BackendService {
 
   Registro(cuerpo: any) {
     return this.http.post(`${this.URL}/registro`, cuerpo);
+  }
+
+  crearPublicacion(cuerpo: any) {
+    return this.http.post(`${this.URL}/crearPublicacion`, cuerpo);
+  }
+
+  obtenerUsuario(usuario: any) {
+    return this.http.get(`${this.URL}/obtenerUsuario/${usuario}`);
+  }
+
+  obtenerPublicaciones(usuario: any) {
+    return this.http.get(`${this.URL}/obtenerPublicaciones/${usuario}`);
+  }
+
+  crearComentario(cuerpo: any) {
+    return this.http.post(`${this.URL}/crearComentario`, cuerpo);
+  }
+
+  obtenerComentarios(id: any) {
+    return this.http.get(`${this.URL}/obtenerComentarios/${id}`);
+  }
+
+  traducir(cuerpo: any) {
+    return this.http.post(`${this.URL}/traducir`, cuerpo);
   }
 }
