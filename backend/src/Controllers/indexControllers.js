@@ -33,7 +33,7 @@ var translate = new AWS.Translate({
 const config = {
     host: 'localhost',
     user: 'root',
-    password: 'Dokyterry*2',
+    password: '',
     database: 'mydb'
 }
 
@@ -238,13 +238,13 @@ exports.obtenerUsuario = async (req, res) => {
     let correo_usr = "";
 
     jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if(err){ //Verificando que no haya errores
+        if (err) { //Verificando que no haya errores
             return res.jsonp({ Res: false })
         }
         // Obtener información del usuario del payload del token
         correo_usr = decodedToken.Correo;
     });
-    
+
     try {
         let c = mysql.createConnection(config)
         c.connect(function (err) {
@@ -259,8 +259,8 @@ exports.obtenerUsuario = async (req, res) => {
                     c.end()
                     return res.jsonp({ Res: false })
                 }
-                
-                return res.jsonp({ Res: true, nombre_completo: result[0].nombre_completo, foto: result[0].foto})
+
+                return res.jsonp({ Res: true, nombre_completo: result[0].nombre_completo, foto: result[0].foto })
             })
 
         })
@@ -278,13 +278,13 @@ exports.crearPublicacion = async (req, res) => {
     const datetime = moment().tz('America/Guatemala').format('YYYY-MM-DD HH:mm:ss');
 
     jwt.verify(usuario, 'clave-secreta', (err, decodedToken) => {
-        if(err){ //Verificando que no haya errores
+        if (err) { //Verificando que no haya errores
             return res.jsonp({ Res: false })
         }
         // Obtener información del usuario del payload del token
         correo_usr = decodedToken.Correo;
     });
-    
+
     try {
         let c = mysql.createConnection(config)
         c.connect(function (err) {
@@ -301,11 +301,11 @@ exports.crearPublicacion = async (req, res) => {
                 }
 
                 let id_usuario = result[0].id //Obteniendo id del usuario que está haciendo la petición
-                
+
                 // subiendo la foto al bucket
                 const nameFoto = `Publicaciones_${correo_usr}/${datetime}.jpg`
                 const buf = new Buffer.from(foto, "base64")
-                
+
 
                 const params = {
                     Bucket: 'semi1proyecto-g8',
@@ -378,13 +378,13 @@ exports.obtenerPublicaciones = async (req, res) => {
     let correo_usr = "";
 
     jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if(err){ //Verificando que no haya errores
+        if (err) { //Verificando que no haya errores
             return res.jsonp({ Res: false })
         }
         // Obtener información del usuario del payload del token
         correo_usr = decodedToken.Correo;
     });
-    
+
     try {
         let c = mysql.createConnection(config)
         c.connect(function (err) {
@@ -393,7 +393,7 @@ exports.obtenerPublicaciones = async (req, res) => {
                 c.end()
                 return res.jsonp({ Res: false })
             }
-            
+
             c.query(`SELECT p.id as pub_id, descripcion, p.foto as pub_foto, fechahora, usuarios_id, u.id as usr_id, nombre_completo, u.foto as usr_foto FROM publicaciones p INNER JOIN usuarios u on p.usuarios_id = u.id`, async function (err, result, field) {
                 if (err) {
                     console.log(err)
@@ -414,10 +414,10 @@ exports.obtenerPublicaciones = async (req, res) => {
                         foto_usr: element.usr_foto,
                         coment: "",
                     }
-                    
+
                     publicaciones.push(publicacion)
                 });
-                return res.jsonp({ Res: true, publicaciones: publicaciones})
+                return res.jsonp({ Res: true, publicaciones: publicaciones })
             })
 
         })
@@ -440,7 +440,7 @@ exports.obtenerComentarios = async (req, res) => {
                 c.end()
                 return res.jsonp({ Res: false })
             }
-            
+
             comentarios = []
             c.query(`SELECT * FROM comentarios WHERE publicaciones_id = ${data.publicacion}`, async function (err, result, field) {
                 if (err) {
@@ -448,20 +448,10 @@ exports.obtenerComentarios = async (req, res) => {
                     c.end()
                     return res.jsonp({ Res: false })
                 }
-                
-                result.forEach(element => {
-                    comentario = {
-                        id_comentario: element.id,
-                        descripcion: element.descripcion,
-                        nombre: element.nombre_usuario,
-                        fechahora: element.fechahora,
-                        foto: element.foto
-                    }
-                    comentarios.push(comentario)
-                });
-                comentarios = comentarios;
+
+                return res.jsonp({ Res: true, comentarios: result })
             })
-            return res.jsonp({ Res: true, comentarios: comentarios})
+
         })
     } catch (e) {
         console.log("e")

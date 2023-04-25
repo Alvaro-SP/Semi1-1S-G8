@@ -1,9 +1,8 @@
 <a  style="cursor:pointer"><h2>Comentarios:</h2></a>
 
-
 <ng-container *ngFor="let comentario of comentarios">
   <div class="post-comment">
     <img src={{comentario.foto}} alt="" class="profile-photo-sm">
-    <p><a href="timeline.html" class="profile-link">{{comentario.nombre}}</a><i class="em em-laughing"></i> {{comentario.descripcion}} </p>
+    <p><a href="timeline.html" class="profile-link">{{comentario.nombre_usuario}}</a><i class="em em-laughing"></i> {{comentario.descripcion}} </p>
   </div>
 </ng-container>

@@ -24,7 +24,10 @@
               </div>
             </div>
           </div>
-            <ng-container *ngFor="let publicacion of publicaciones">
+            <ng-container >
+              <div *ngFor="let publicacion of this.publicaciones">
+
+              
               <div class="post-content">
 
                 <div class="post-container">
@@ -56,7 +59,7 @@
                     <img src={{publicacion.foto_pub}} alt="post-image" class="img-responsive post-image">
                     <hr>
 
-                    <p>{{publicacion.id_pub}}</p>
+                    
                     <app-comentarios [id]="publicacion.id_pub" ></app-comentarios>
 
                     <div class="post-comment">
@@ -67,6 +70,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             </ng-container>
         </div>
     </div>

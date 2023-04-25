@@ -29,7 +29,7 @@ export class PublicacionesComponent implements OnInit {
     foto:""
   }
 
-  publicaciones : any;
+  publicaciones : any = [];
 
   constructor(private backend: BackendService, private router: Router) {
     if (sessionStorage.getItem("usuario") == null) {
@@ -151,7 +151,7 @@ export class PublicacionesComponent implements OnInit {
     this.backend.obtenerPublicaciones(this.usuario).subscribe(
       data=>{
         this.publicaciones = JSON.parse(JSON.stringify(data)).publicaciones
-        console.log(this.publicaciones)
+        //console.log(this.publicaciones)
       },
       _err=>{
         Swal.fire({

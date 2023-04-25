@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackendService } from 'src/app/services/backend.service';
 
@@ -11,26 +11,29 @@ import Swal from 'sweetalert2'
 })
 export class ComentariosComponent implements OnInit {
 
-  @Input() id:number = 0;
+  @Input()
+  id: number = 0
 
 
-  comentarios : any;
+  comentarios: any;
 
   constructor(private backend: BackendService, private router: Router) {
-    this.obtenerComentarios()
-    console.log(this.id)
+
   }
 
   ngOnInit(): void {
+    this.obtenerComentarios()
+    console.log(this.comentarios)
   }
 
-  obtenerComentarios(){
+
+  obtenerComentarios() {
     this.backend.obtenerComentarios(this.id).subscribe(
-      data=>{
+      data => {
         this.comentarios = JSON.parse(JSON.stringify(data)).comentarios
         console.log(this.comentarios)
       },
-      _err=>{
+      _err => {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
