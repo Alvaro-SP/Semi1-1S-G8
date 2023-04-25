@@ -16,7 +16,6 @@ export class RegistroComponent implements OnInit {
   ngOnInit(): void {
   }
   cuerpo: any = {
-    Usuario: '',
     Nombre: '',
     Correo: '',
     Dpi: '',

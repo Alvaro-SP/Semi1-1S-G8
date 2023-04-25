@@ -8,6 +8,10 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { BarraSuperiorComponent } from './components/barra-superior/barra-superior.component';
 import { FormsModule } from '@angular/forms';
 import { WebcamModule } from 'ngx-webcam';
+import { PublicacionesComponent } from './components/publicaciones/publicaciones.component';
+import { BarraNavegacionComponent } from './components/barra-navegacion/barra-navegacion.component';
+import { ComentariosComponent } from './components/comentarios/comentarios.component';
+import { CommonModule } from '@angular/common';
 import { ChatfriendsComponent } from './components/chatfriends/chatfriends.component';
 
 @NgModule({
@@ -16,6 +20,9 @@ import { ChatfriendsComponent } from './components/chatfriends/chatfriends.compo
     LoginComponent,
     RegistroComponent,
     BarraSuperiorComponent,
+    PublicacionesComponent,
+    BarraNavegacionComponent,
+    ComentariosComponent
     ChatfriendsComponent
   ],
   imports: [
@@ -23,7 +30,8 @@ import { ChatfriendsComponent } from './components/chatfriends/chatfriends.compo
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    WebcamModule
+    WebcamModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

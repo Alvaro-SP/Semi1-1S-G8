@@ -1,0 +1,83 @@
+<app-barra-navegacion></app-barra-navegacion>
+<body>
+  <div class="container">
+    <div class="row">
+        <div class="col">
+          <div class="post-content">
+
+            <div class="post-container">
+
+              <div class="post-detail">
+                <h2>Crear publicación</h2>
+                <div class="post-comment">
+                  <img src={{perfil.foto}} alt="" class="profile-photo-sm">
+                  <textarea class="post-txt-area" id="texto" name="texto" [(ngModel)]="publicacion.descripcion" placeholder="¿Qué estás pensando?"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input type="file" class="upload-box" name = "foto" id="inputGroupFile01" accept="image/*" #ImageInput [(ngModel)]="pic" (change)="onImageUpload()"/>
+                  </div>
+                  <div class="col" style="text-align: right;">
+                    <button type="button" (click)="crearPublicacion()" class="btn btn-success btn-publicar"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            <ng-container >
+              <div *ngFor="let publicacion of this.publicaciones">
+
+
+              <div class="post-content">
+
+                <div class="post-container">
+
+                  <div class="post-detail">
+                    <div class="user-info">
+                      <div class="row">
+                        <div class="col-md-auto">
+                          <img src={{publicacion.foto_usr}} alt="user" class="profile-photo-md pull-left">
+                        </div>
+                        <div class="col-8">
+                          <div class="row">
+                            <h5><a href="timeline.html" class="profile-link">{{publicacion.nombre_usr}}</a></h5>
+                          </div>
+                          <div class="row">
+                            <p class="text-muted">Publicado hace {{haceTiempo(publicacion.fechahora)}}</p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="reaction" *ngIf='publicacion.descripcion != ""'>
+                      <a class="btn text-blue" (click)="traducir(publicacion.id, publicacion.descripcion, publicacion)" style="cursor:pointer"><i class="fa-solid fa-language"></i> Traducir</a>
+                    </div>
+
+                    <div class="line-divider"></div>
+                    <div class="post-text">
+                      <p>{{publicacion.descripcion}}</p>
+                    </div>
+
+                    <img src={{publicacion.foto_pub}} alt="post-image" class="img-responsive post-image">
+                    <hr>
+
+
+                    <app-comentarios [id]="publicacion.id_pub" ></app-comentarios>
+
+                    <div class="post-comment">
+                      <img src={{perfil.foto}} alt="" class="profile-photo-sm">
+                      <textarea id="texto" name="texto" placeholder="Escribe aun comentario" [(ngModel)]="publicacion.coment"></textarea>
+                      <button type="button" (click)="comentar(publicacion.id_pub, publicacion.coment)" class="btn-send"><i class="fa-solid fa-paper-plane fa-lg"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </ng-container>
+        </div>
+    </div>
+  </div>
+</body>
+
