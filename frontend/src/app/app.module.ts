@@ -12,6 +12,7 @@ import { PublicacionesComponent } from './components/publicaciones/publicaciones
 import { BarraNavegacionComponent } from './components/barra-navegacion/barra-navegacion.component';
 import { ComentariosComponent } from './components/comentarios/comentarios.component';
 import { CommonModule } from '@angular/common';
+import { VerPerfilComponent } from './components/ver-perfil/ver-perfil.component';
 import { ChatfriendsComponent } from './components/chatfriends/chatfriends.component';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ChatfriendsComponent } from './components/chatfriends/chatfriends.compo
     PublicacionesComponent,
     BarraNavegacionComponent,
     ComentariosComponent,
+    VerPerfilComponent,
     ChatfriendsComponent
   ],
   imports: [

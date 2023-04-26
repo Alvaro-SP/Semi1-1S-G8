@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
         if (resp.Res) {
 
           sessionStorage.setItem("usuario", resp.token)
-          alert("Todo Ok")
+          this.router.navigate(['publicaciones'])
         } else {
           Swal.fire({
             icon: 'error',

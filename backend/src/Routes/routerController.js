@@ -12,4 +12,6 @@ router.get("/obtenerPublicaciones/:usuario", control.obtenerPublicaciones)
 router.post("/crearComentario", control.crearComentario)
 router.get("/obtenerComentarios/:publicacion", control.obtenerComentarios)
 router.post("/traducir", control.traducir)
+router.get("/obtenerUsuario2/:usuario", control.obtenerUsuario2)
+router.put("/actualizarPerfil", control.EditarUsuario)
 module.exports = router

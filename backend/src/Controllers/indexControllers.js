@@ -5,7 +5,8 @@ const CognitoUserAttribute = require('amazon-cognito-identity-js').CognitoUserAt
 const CognitoUserPool = require('amazon-cognito-identity-js').CognitoUserPool
 const AuthenticationDetails = require('amazon-cognito-identity-js').AuthenticationDetails
 const CognitoUser = require('amazon-cognito-identity-js').CognitoUser
-const cloneDeep = require('lodash');
+
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 const moment = require('moment-timezone');
 
@@ -33,7 +34,7 @@ var translate = new AWS.Translate({
 const config = {
     host: 'localhost',
     user: 'root',
-    password: 'Dokyterry*2',
+    password: '',
     database: 'mydb'
 }
 
@@ -269,7 +270,6 @@ exports.obtenerUsuario = async (req, res) => {
         console.log(e)
         res.jsonp({ Res: false })
     }
-
 }
 
 exports.crearPublicacion = async (req, res) => {
@@ -486,4 +486,172 @@ exports.traducir = async (req, res) => {
         res.jsonp({ Res: false })
     }
 
+}
+
+
+exports.obtenerUsuario2 = async (req, res) => {
+    const data = req.params;
+    let correo_usr = "";
+
+    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+        if (err) { //Verificando que no haya errores
+            return res.jsonp({ Res: false })
+        }
+        // Obtener información del usuario del payload del token
+        correo_usr = decodedToken.Correo;
+    });
+
+    try {
+        let c = mysql.createConnection(config)
+        c.connect(function (err) {
+            if (err) {
+                console.log(err)
+                c.end()
+                return res.jsonp({ Res: false })
+            }
+            c.query(`SELECT * FROM usuarios WHERE correo='${correo_usr}'`, async function (err, result, field) {
+                if (err) {
+                    console.log(err)
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+
+                return res.jsonp({ Res: true, correo: result[0].correo, nombre: result[0].nombre_completo, dpi: result[0].dpi, foto: result[0].foto })
+            })
+
+        })
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
+
+
+}
+
+exports.EditarUsuario = async (req, res) => {
+    const { Correo, Pass, Nombre, Dpi, Foto } = req.body
+    let correo_usr = "";
+
+    jwt.verify(Correo, 'clave-secreta', (err, decodedToken) => {
+        if (err) { //Verificando que no haya errores
+            return res.jsonp({ Res: false })
+        }
+        // Obtener información del usuario del payload del token
+        correo_usr = decodedToken.Correo;
+    });
+
+    try {
+        //verificamos la password
+        let c = mysql.createConnection(config)
+        c.connect(function (err) {
+            if (err) {
+                console.log(err)
+                c.end()
+                return res.jsonp({ Res: false })
+            }
+            c.query(`SELECT * FROM usuarios WHERE correo='${correo_usr}' AND password='${md5(Pass)}'`, async function (err, result, field) {
+                if (err) {
+                    console.log(err)
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+                if (result.length != 1) {
+                    console.log("Invalid Password")
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+
+                // actualizamos primero en cognito
+                // loggeamos primero al usuario y luego actualizamos sus datos
+
+                const loginData = {
+                    Username: correo_usr,
+                    Pool: cognito
+                }
+                const cognitoUserLogin = new CognitoUser(loginData)
+                const detalleAutenticacion = new AuthenticationDetails({
+                    Username: correo_usr,
+                    Password: md5(Pass)
+                })
+
+                await cognitoUserLogin.authenticateUser(detalleAutenticacion, {
+                    onFailure: (err) => {
+                        console.log("autenticacion")
+                        console.log(err)
+                        c.end()
+                        return res.jsonp({ Res: false })
+                    },
+                    onSuccess: async (result) => {
+                        const accessToken = result.getAccessToken();
+
+                        const attributeList = []
+
+                        const dataName = {
+                            Name: 'name',
+                            Value: Nombre
+                        }
+                        attributeList.push(new CognitoUserAttribute(dataName))
+
+                        const newDPI = {
+                            Name: 'custom:dpi',
+                            Value: Dpi
+                        }
+                        attributeList.push(new CognitoUserAttribute(newDPI))
+                        const params = {
+                            AccessToken: accessToken,
+                            UserAttributes: attributeList,
+                        }
+
+                        await cognitoUserLogin.updateAttributes(attributeList, async function (err, data) {
+                            if (err) {
+                                console.log("actualizacion")
+                                console.log(err)
+                                c.end()
+                                return res.jsonp({ Res: false })
+                            }
+                            console.log("data")
+                            console.log(data)
+                            // actualizacion s3
+                            if (!Foto.includes("http")) {
+                                const nameFoto = `Fotos_Perfil/${correo_usr}.jpg`
+                                const buf = new Buffer.from(Foto, "base64")
+
+                                const params2 = {
+                                    Bucket: 'semi1proyecto-g8',
+                                    Key: nameFoto,
+                                    Body: buf,
+                                    ContentType: "image/jpeg",
+                                }
+                                await s3.upload(params2).promise();
+                            }
+
+
+                            // actualizar db
+                            c.query(`UPDATE usuarios SET nombre_completo='${Nombre}', dpi='${Dpi}' WHERE correo='${correo_usr}';`, async function (err, result, field) {
+                                if (err) {
+                                    console.log(err)
+                                    c.end()
+                                    return res.jsonp({ Res: false })
+                                }
+                                return res.jsonp({ Res: true })
+                            }
+                            )
+                        })
+                    }
+                }
+                )
+
+
+
+
+            })
+
+        })
+
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
 }
