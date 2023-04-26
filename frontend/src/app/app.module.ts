@@ -12,6 +12,7 @@ import { PublicacionesComponent } from './components/publicaciones/publicaciones
 import { BarraNavegacionComponent } from './components/barra-navegacion/barra-navegacion.component';
 import { ComentariosComponent } from './components/comentarios/comentarios.component';
 import { CommonModule } from '@angular/common';
+import { VerPerfilComponent } from './components/ver-perfil/ver-perfil.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     BarraSuperiorComponent,
     PublicacionesComponent,
     BarraNavegacionComponent,
-    ComentariosComponent
+    ComentariosComponent,
+    VerPerfilComponent
   ],
   imports: [
     BrowserModule,

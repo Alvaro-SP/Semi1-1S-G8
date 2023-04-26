@@ -41,4 +41,12 @@ export class BackendService {
   traducir(cuerpo: any) {
     return this.http.post(`${this.URL}/traducir`, cuerpo);
   }
+
+  obtenerUsuario2(usuario: any) {
+    return this.http.get(`${this.URL}/obtenerUsuario2/${usuario}`);
+  }
+  
+  editarPerfil(cuerpo:any){
+    return this.http.put(`${this.URL}/actualizarPerfil`,cuerpo);
+  }
 }
