@@ -22,7 +22,7 @@ import { ChatfriendsComponent } from './components/chatfriends/chatfriends.compo
     BarraSuperiorComponent,
     PublicacionesComponent,
     BarraNavegacionComponent,
-    ComentariosComponent
+    ComentariosComponent,
     ChatfriendsComponent
   ],
   imports: [
