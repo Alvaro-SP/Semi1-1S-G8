@@ -21,12 +21,12 @@ const routes: Routes = [
     component: RegistroComponent
   },
   {
+    path: 'publicaciones',
     component: PublicacionesComponent
   },
   {
     path: 'verPerfil',
     component: VerPerfilComponent
-    path: 'publicaciones',
   },
   {
     path:'chatandfriends',
