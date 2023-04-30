@@ -49,11 +49,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`comentarios` (
 -- Table `mydb`.`amigos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`amigos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL,
   `state` INT NOT NULL,
   `usuarios_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_amigos_usuarios1` FOREIGN KEY (`usuarios_id`) REFERENCES `mydb`.`usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id`, `usuarios_id`),
+  CONSTRAINT `fk_amigos_usuarios1` FOREIGN KEY (`id`) REFERENCES `mydb`.`usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_amigos_usuarios2` FOREIGN KEY (`usuarios_id`) REFERENCES `mydb`.`usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
