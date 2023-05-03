@@ -1,4 +1,4 @@
-<app-barra-superior></app-barra-superior>
+<app-barra-navegacion></app-barra-navegacion>
 <div id="container">
     <aside>
         <header>
@@ -6,7 +6,8 @@
         </header>
         <h2>Amigos</h2>
         <ul>
-            <li *ngFor="let friend of friends">
+            <!-- here i have an for to generate all the friends of the user, and clicked to show the messages -->
+            <li *ngFor="let friend of friends" attr.id="{{ friend.id }}" (click)="onFriendClick(friend.id)">
                 <img [src]="friend.imageName" alt="">
                 <div>
                     <h2>{{ friend.name }}</h2>

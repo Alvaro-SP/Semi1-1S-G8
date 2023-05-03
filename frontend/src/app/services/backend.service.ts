@@ -49,4 +49,24 @@ export class BackendService {
   editarPerfil(cuerpo:any){
     return this.http.put(`${this.URL}/actualizarPerfil`,cuerpo);
   }
+  
+  addfriend(usuario:any){
+    return this.http.post(`${this.URL}/addfriend/${usuario}`, usuario);
+  }
+
+  getfriends(usuario:any){
+    return this.http.get(`${this.URL}/getfriends/${usuario}`);
+  }
+
+  getallusers(usuario:any){
+    return this.http.get(`${this.URL}/getallusers/${usuario}`);
+  }
+
+  aceptarAmigo(usuario:any){
+    return this.http.put(`${this.URL}/aceptarAmigo`,usuario);
+  }
+
+  sendmessageBot(cuerpo:any){
+    return this.http.post(`${this.URL}/sendmessageBot`,cuerpo);
+  }
 }

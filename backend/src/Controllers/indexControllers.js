@@ -48,7 +48,6 @@ const config = {
     database: process.env.MYSQL_DATABASE,
     port: process.env.MYSQL_PORT,
 }
-
 const cognito = new CognitoUserPool({ UserPoolId: 'us-east-1_TTQyzQZ4r', ClientId: '2eijqb5qm6eu3m9bu2ui3rt944' })
 
 exports.prueba = async (req, res) => {
@@ -196,9 +195,9 @@ exports.login = async (req, res) => {
                             c.end()
                             return res.jsonp({ Res: false })
                         }
-                        const token = jwt.sign({ Correo, id:result[0].id }, 'clave-secreta', { expiresIn: '1h' })
+                        const token = jwt.sign({ Correo, id: result[0].id }, 'clave-secreta', { expiresIn: '1h' })
                         c.end()
-                        return res.jsonp({ Res: true, token: token })
+                        return res.jsonp({ Res: true, token: token, id: result[0].id })
                     })
                 })
             })
@@ -694,7 +693,7 @@ exports.addfriend = async (req, res) => {
                 return res.jsonp({ Res: false })
             }
             c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}' OR correo ='${correo_amigo_usr}';`, async function (err, result, field) {
-            
+
                 if (err) {
                     console.log(err)
                     c.end()
@@ -707,19 +706,19 @@ exports.addfriend = async (req, res) => {
                     console.log("no existe alguno de los usuarios")
                     c.end()
                     return res.jsonp({ Res: false })
-                }else{
+                } else {
                     let id_usr;
                     let id_amigo_usr;
                     for (let i = 0; i < result.length; i++) {
                         const element = result[i];
-                        if(element.correo == correo_usr){
+                        if (element.correo == correo_usr) {
                             id_usr = element.id;
                         }
-                        if(element.correo == correo_amigo_usr){
+                        if (element.correo == correo_amigo_usr) {
                             id_amigo_usr = element.id;
                         }
                     }
-                
+
                     c.query(`SELECT * FROM amigos WHERE (id = ${id_usr} AND usuarios_id = ${id_amigo_usr}) OR (id = ${id_amigo_usr} AND usuarios_id =  ${id_usr});`, async function (err, result, field) {
                         if (err) {
                             console.log(err)
@@ -730,7 +729,7 @@ exports.addfriend = async (req, res) => {
                             console.log("ya son amigos")
                             c.end()
                             return res.jsonp({ Res: false })
-                        }else{
+                        } else {
                             console.log(result)
                             c.query(`INSERT INTO amigos(id, state, usuarios_id) VALUES('${id_usr}',0,'${id_amigo_usr}');`, async function (err, result, field) {
                                 if (err) {
@@ -738,13 +737,13 @@ exports.addfriend = async (req, res) => {
                                     c.end()
                                     return res.jsonp({ Res: false })
                                 }
-                
+
                                 return res.jsonp({ Res: true })
                             })
                         }
                     })
                 }
-            }) 
+            })
         })
     } catch (e) {
         console.log("e")
@@ -755,8 +754,8 @@ exports.addfriend = async (req, res) => {
 
 exports.getfriends = async (req, res) => {
     const data = req.params;
-    let correo_usr = "";    
-
+    let correo_usr = "";
+    console.log(data)
     jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
         if (err) { //Verificando que no haya errores
             console.log("hubo un error en la decodificacion")
@@ -774,17 +773,17 @@ exports.getfriends = async (req, res) => {
                 return res.jsonp({ Res: false })
             }
             c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}';`, async function (err, result, field) {
-            
+
                 if (err) {
                     console.log(err)
                     c.end()
                     return res.jsonp({ Res: false })
                 }
 
-                
+
                 let id_usr = result[0].id;
 
-                
+
                 c.query(`SELECT amigos.id as id1, us.nombre_completo as nombre1, u.dpi as dpi1, u.foto as foto1, u.correo as correo1, amigos.state, amigos.usuarios_id as id2, u.nombre_completo as nombre2, u.dpi as dpi2, u.foto as foto2, u.correo as correo2 
                 FROM ((amigos inner join usuarios as us on us.id = amigos.id ) inner join usuarios as u on u.id = amigos.usuarios_id)
                 WHERE amigos.usuarios_id = ${id_usr} OR amigos.id = ${id_usr} `, async function (err, result, field) {
@@ -798,16 +797,16 @@ exports.getfriends = async (req, res) => {
                     lista = []
                     for (let i = 0; i < result.length; i++) {
                         const element = result[i];
-                        if(element.id1 == id_usr){
-                            lista.push({id: element.id1, nombre: element.nombre1, dpi: element.dpi1, foto: element.foto1, correo: element.correo1, state: element.state})
-                        }else if(element.id2 == id_usr){
-                            lista.push({id: element.id2, nombre: element.nombre2, dpi: element.dpi2, foto: element.foto2, correo: element.correo2, state: element.state})
+                        if (element.id1 == id_usr) {
+                            lista.push({ id: element.id1, nombre: element.nombre1, dpi: element.dpi1, foto: element.foto1, correo: element.correo1, state: element.state })
+                        } else if (element.id2 == id_usr) {
+                            lista.push({ id: element.id2, nombre: element.nombre2, dpi: element.dpi2, foto: element.foto2, correo: element.correo2, state: element.state })
                         }
                     }
 
                     return res.jsonp({ Res: true, amigos: lista })
                 })
-                
+
             })
         })
     } catch (e) {
@@ -844,7 +843,7 @@ exports.getallusers = async (req, res) => {
                     c.end()
                     return res.jsonp({ Res: false })
                 }
-                
+
                 return res.jsonp({ Res: true, usuarios: result })
             })
 
@@ -880,7 +879,7 @@ exports.updatestateFriend = async (req, res) => {
                 return res.jsonp({ Res: false })
             }
             c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}' OR correo ='${correo_amigo_usr}';`, async function (err, result, field) {
-            
+
                 if (err) {
                     console.log(err)
                     c.end()
@@ -893,20 +892,20 @@ exports.updatestateFriend = async (req, res) => {
                     console.log("no existe alguno de los usuarios")
                     c.end()
                     return res.jsonp({ Res: false })
-                }else{
+                } else {
                     let id_usr;
                     let id_amigo_usr;
                     for (let i = 0; i < result.length; i++) {
                         const element = result[i];
-                        if(element.correo == correo_usr){
+                        if (element.correo == correo_usr) {
                             id_usr = element.id;
                         }
-                        if(element.correo == correo_amigo_usr){
+                        if (element.correo == correo_amigo_usr) {
                             id_amigo_usr = element.id;
                         }
                     }
-    
-                    
+
+
                     c.query(`UPDATE amigos
                     SET state = 1
                     WHERE amigos.id = ${id_usr} and amigos.usuarios_id = ${id_amigo_usr};`, async function (err, result, field) {
@@ -915,14 +914,14 @@ exports.updatestateFriend = async (req, res) => {
                             c.end()
                             return res.jsonp({ Res: false })
                         }
-    
+
                         //console.log(result)
-    
+
                         return res.jsonp({ Res: true })
                     })
                 }
-                            
-                
+
+
             })
         })
     } catch (e) {
@@ -932,14 +931,14 @@ exports.updatestateFriend = async (req, res) => {
     }
 }
 
-var dict ={};
+var dict = {};
 
 exports.sendmessage = async (req, res) => {
     const data = req.body
     // const data = req.params
     // let message = ""
     // let id = ""
-    
+
     // jwt.verify(data, 'clave-secreta', (err, decodedToken) => {
     //     if (err) { //Verificando que no haya errores
     //         console.log("hubo un error en la decodificacion")
@@ -952,22 +951,22 @@ exports.sendmessage = async (req, res) => {
 
     let message = data.message
     let id = data.id
-    
+
     //console.log(id)
-    if(dict[id] == undefined){
+    if (dict[id] == undefined) {
         dict[id] = []
     }
-    
+
     try {
         //console.log("-------------")
         //console.log(postchatbot(message))
         //console.log(dict[id][dict[id].length-1])
-        if(dict[id][dict[id].length-1] != undefined){
-            if(dict[id][dict[id].length-1].message == "Para finalizar, escribe la contraseña para loggearte en la cuenta."){
+        if (dict[id][dict[id].length - 1] != undefined) {
+            if (dict[id][dict[id].length - 1].message == "Para finalizar, escribe la contraseña para loggearte en la cuenta.") {
                 console.log("--------------------entro-------------------")
                 console.log(message)
                 console.log(message.length)
-                if(message.length < 8){
+                if (message.length < 8) {
                     dict[id].push({
                         message: message,
                         bot: false
@@ -985,43 +984,43 @@ exports.sendmessage = async (req, res) => {
             }
         }
 
-        postchatbot(message, '12'+id).then( async (answer) => {
+        postchatbot(message, '12' + id).then(async (answer) => {
             dict[id].push({
                 message: message,
                 bot: false
-                })
+            })
 
             dict[id].push({
                 message: answer.messages[0].content,
                 bot: true
             })
-            
+
             console.log(answer.messages[0].content)
             //console.log(answer.sessionState.intent.name)
 
-            if(answer.sessionState.intent.name == "agregarAmigo"){
+            if (answer.sessionState.intent.name == "agregarAmigo") {
                 console.log("agregarAmigo")
-                if (answer.messages[0].content == "OK, se ha enviado una solicitud de amistad con exito al amigo"){
+                if (answer.messages[0].content == "OK, se ha enviado una solicitud de amistad con exito al amigo") {
                     let correo1 = ""
                     let correo2 = ""
                     for (let i = 0; i < dict[id].length; i++) {
                         const element = dict[id][i];
 
-                        if(element.message == "Hola, seleccionaste la funcion agregar amigo \\n para agregar un Amigo me debes brindar tu correo electronico"){                      
+                        if (element.message == "Hola, seleccionaste la funcion agregar amigo \\n para agregar un Amigo me debes brindar tu correo electronico") {
                             console.log("correo1")
-                            console.log(dict[id][i+1])
-                            correo1 = dict[id][i+1].message
-                        }else if (element.message == "a continuacion dame el correo de la persona que deseas agregar"){                      
+                            console.log(dict[id][i + 1])
+                            correo1 = dict[id][i + 1].message
+                        } else if (element.message == "a continuacion dame el correo de la persona que deseas agregar") {
                             console.log("correo2")
-                            console.log(dict[id][i+1])
-                            correo2 = dict[id][i+1].message
+                            console.log(dict[id][i + 1])
+                            correo2 = dict[id][i + 1].message
                         }
                     }
                     const respuesta = await agregarAmigo(correo1, correo2)
                 }
-            }else if(answer.sessionState.intent.name == "crearUsuario"){
+            } else if (answer.sessionState.intent.name == "crearUsuario") {
                 console.log("crearUsuario")
-                if (answer.messages[0].content == "Si hay algo mas en que pueda ayudarte, estoy para servirte :)"){
+                if (answer.messages[0].content == "Si hay algo mas en que pueda ayudarte, estoy para servirte :)") {
                     let nombre = "";
                     let DPI = "";
                     let correo = "";
@@ -1029,55 +1028,55 @@ exports.sendmessage = async (req, res) => {
                     for (let i = 0; i < dict[id].length; i++) {
                         const element = dict[id][i];
 
-                        if(element.message == "Entiendo funcionalidad para crear un usuario iniciada.                       Para empezar podria decirme que su correo? "){                      
+                        if (element.message == "Entiendo funcionalidad para crear un usuario iniciada.                       Para empezar podria decirme que su correo? ") {
                             console.log("correo")
-                            console.log(dict[id][i+1])
-                            correo = dict[id][i+1].message
-                        }else if(element.message == "Todo correcto, ahora porfavor escribir su nombre:"){
+                            console.log(dict[id][i + 1])
+                            correo = dict[id][i + 1].message
+                        } else if (element.message == "Todo correcto, ahora porfavor escribir su nombre:") {
                             console.log("nombre")
-                            console.log(dict[id][i+1])
-                            nombre = dict[id][i+1].message
-                        }else if(element.message == "A continuacion, podrias darme tu numero de DPI? "){
+                            console.log(dict[id][i + 1])
+                            nombre = dict[id][i + 1].message
+                        } else if (element.message == "A continuacion, podrias darme tu numero de DPI? ") {
                             console.log("DPI")
-                            console.log(dict[id][i+1])
-                            DPI = dict[id][i+1].message
-                        }else if(element.message == "Para finalizar, escribe la contraseña para loggearte en la cuenta."){
+                            console.log(dict[id][i + 1])
+                            DPI = dict[id][i + 1].message
+                        } else if (element.message == "Para finalizar, escribe la contraseña para loggearte en la cuenta.") {
                             console.log("password")
-                            console.log(dict[id][i+1])
-                            password = dict[id][i+1].message
+                            console.log(dict[id][i + 1])
+                            password = dict[id][i + 1].message
                         }
                     }
                     const registroterminado = await registrosinFoto(nombre, correo, DPI, password)
-                }               
-            }else if(answer.sessionState.intent.name == "traduccion"){
+                }
+            } else if (answer.sessionState.intent.name == "traduccion") {
                 console.log("traduccion")
-                if (answer.messages[0].content == "Su texto traducido es el siguiente: "){
+                if (answer.messages[0].content == "Su texto traducido es el siguiente: ") {
                     let texto = ""
                     for (let i = 0; i < dict[id].length; i++) {
                         const element = dict[id][i];
 
-                        if(element.message == "Funcion de traducir detectada, a continuacion ingresa el texto que deseas traducir:"){                      
+                        if (element.message == "Funcion de traducir detectada, a continuacion ingresa el texto que deseas traducir:") {
                             console.log("texto")
-                            console.log(dict[id][i+1])
-                            texto = dict[id][i+1].message
+                            console.log(dict[id][i + 1])
+                            texto = dict[id][i + 1].message
                         }
                     }
                     const respuesta = await traducirfunc(texto)
-                        
+
                     dict[id].push({
                         message: respuesta.descripcion,
                         bot: true
                     })
-                      
+
                 }
             }
 
             res.jsonp(dict[id])
         },
-        (error) => {
-            console.log(error)
-            res.jsonp({ Res: false })
-        })
+            (error) => {
+                console.log(error)
+                res.jsonp({ Res: false })
+            })
     } catch (error) {
         console.log(error)
         res.jsonp({ Res: false })
@@ -1196,7 +1195,7 @@ const registrosinFoto = async (Nombre, Correo, Dpi, Password) => {
     })
 }
 
-const traducirfunc = async (descripcion ) => {
+const traducirfunc = async (descripcion) => {
     return new Promise((resolve, reject) => {
         try {
             const params2 = {
@@ -1233,7 +1232,7 @@ const agregarAmigo = async (correo_usr, correo_amigo_usr) => {
                     reject({ Res: false })
                 }
                 c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}' OR correo ='${correo_amigo_usr}';`, async function (err, result, field) {
-                
+
                     if (err) {
                         console.log(err)
                         c.end()
@@ -1246,19 +1245,19 @@ const agregarAmigo = async (correo_usr, correo_amigo_usr) => {
                         console.log("no existe alguno de los usuarios")
                         c.end()
                         reject({ Res: false })
-                    }else{
+                    } else {
                         let id_usr;
                         let id_amigo_usr;
                         for (let i = 0; i < result.length; i++) {
                             const element = result[i];
-                            if(element.correo == correo_usr){
+                            if (element.correo == correo_usr) {
                                 id_usr = element.id;
                             }
-                            if(element.correo == correo_amigo_usr){
+                            if (element.correo == correo_amigo_usr) {
                                 id_amigo_usr = element.id;
                             }
                         }
-                    
+
                         c.query(`SELECT * FROM amigos WHERE (id = ${id_usr} AND usuarios_id = ${id_amigo_usr}) OR (id = ${id_amigo_usr} AND usuarios_id =  ${id_usr});`, async function (err, result, field) {
                             if (err) {
                                 console.log(err)
@@ -1269,7 +1268,7 @@ const agregarAmigo = async (correo_usr, correo_amigo_usr) => {
                                 console.log("ya son amigos")
                                 c.end()
                                 reject({ Res: false })
-                            }else{
+                            } else {
                                 console.log(result)
                                 c.query(`INSERT INTO amigos(id, state, usuarios_id) VALUES('${id_usr}',0,'${id_amigo_usr}');`, async function (err, result, field) {
                                     if (err) {
@@ -1277,13 +1276,13 @@ const agregarAmigo = async (correo_usr, correo_amigo_usr) => {
                                         c.end()
                                         reject({ Res: false })
                                     }
-                    
+
                                     resolve({ Res: true })
                                 })
                             }
                         })
                     }
-                }) 
+                })
             })
         } catch (e) {
             console.log("e")
