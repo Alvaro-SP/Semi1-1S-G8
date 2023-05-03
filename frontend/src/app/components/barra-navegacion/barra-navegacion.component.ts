@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackendService } from 'src/app/services/backend.service';
 import Swal from 'sweetalert2'
+
 @Component({
   selector: 'app-barra-navegacion',
   templateUrl: './barra-navegacion.component.html',
@@ -18,7 +19,7 @@ export class BarraNavegacionComponent implements OnInit {
   ];
   cuerpo: any = {
     message: '',
-    id:sessionStorage.getItem("usuario")
+    id: sessionStorage.getItem("id")
   }
   // id = sessionStorage.getItem("usuario")
   

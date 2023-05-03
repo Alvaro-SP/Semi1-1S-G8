@@ -251,15 +251,15 @@ exports.obtenerUsuario = async (req, res) => {
     const data = req.params;
     let correo_usr = "";
 
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-    });
 
     try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
         let c = mysql.createConnection(config)
         c.connect(function (err) {
             if (err) {
@@ -290,15 +290,15 @@ exports.crearPublicacion = async (req, res) => {
     let correo_usr = "";
     const datetime = moment().tz('America/Guatemala').format('YYYY-MM-DD HH:mm:ss');
 
-    jwt.verify(usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-    });
 
     try {
+        jwt.verify(usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
         let c = mysql.createConnection(config)
         c.connect(function (err) {
             if (err) {
@@ -390,15 +390,15 @@ exports.obtenerPublicaciones = async (req, res) => {
     const data = req.params;
     let correo_usr = "";
 
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-    });
 
     try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
         let c = mysql.createConnection(config)
         c.connect(function (err) {
             if (err) {
@@ -506,15 +506,15 @@ exports.obtenerUsuario2 = async (req, res) => {
     const data = req.params;
     let correo_usr = "";
 
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-    });
 
     try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
         let c = mysql.createConnection(config)
         c.connect(function (err) {
             if (err) {
@@ -546,15 +546,15 @@ exports.EditarUsuario = async (req, res) => {
     const { Correo, Pass, Nombre, Dpi, Foto } = req.body
     let correo_usr = "";
 
-    jwt.verify(Correo, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-    });
 
     try {
+        jwt.verify(Correo, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
         //verificamos la password
         let c = mysql.createConnection(config)
         c.connect(function (err) {
@@ -669,22 +669,127 @@ exports.EditarUsuario = async (req, res) => {
     }
 }
 
-exports.addfriend = async (req, res) => {
+
+exports.getfriends = async (req, res) => {
     const data = req.params;
+    let correo_usr = "";
+    console.log(data)
+    try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                console.log("hubo un error en la decodificacion")
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+        });
+        let c = mysql.createConnection(config)
+        c.connect(function (err) {
+            if (err) {
+                console.log(err)
+                c.end()
+                return res.jsonp({ Res: false })
+            }
+            c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}';`, async function (err, result, field) {
+
+                if (err) {
+                    console.log(err)
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+
+                console.log("RESULT****", result)
+                let id_usr = result[0].id;
+
+                c.query(`SELECT amigos.id as id1, us.nombre_completo as nombre1, us.dpi as dpi1,  us.foto as foto1, us.correo as correo1, amigos.state,
+                amigos.usuarios_id as id2, u.nombre_completo as nombre2, u.dpi as dpi2, u.foto as foto2, u.correo as correo2
+                FROM ((amigos inner join usuarios as us on us.id = amigos.id )
+                inner join usuarios as u on u.id = amigos.usuarios_id)
+                WHERE (amigos.usuarios_id = ${id_usr} OR amigos.id = ${id_usr}) AND amigos.state = 1`, async function (err, result, field) {
+                    if (err) {
+                        console.log(err)
+                        c.end()
+                        return res.jsonp({ Res: false })
+                    }
+
+                    //console.log(result)
+                    lista = []
+                    for (let i = 0; i < result.length; i++) {
+                        const element = result[i];
+                        if (element.id1 == id_usr) {
+                            lista.push({ id: element.id2, nombre: element.nombre2, dpi: element.dpi2, foto: element.foto2, correo: element.correo2, state: element.state })
+                        } else if (element.id2 == id_usr) {
+                            lista.push({ id: element.id1, nombre: element.nombre1, dpi: element.dpi1, foto: element.foto1, correo: element.correo1, state: element.state })
+                        }
+                    }
+
+                    return res.jsonp({ Res: true, amigos: lista })
+                })
+
+            })
+        })
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
+}
+
+exports.getallusers = async (req, res) => {
+    const data = req.params;
+    let correo = "";
+
+
+    try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                console.log("hubo un error en la decodificacion")
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo = decodedToken.Correo;
+        });
+        let c = mysql.createConnection(config)
+        c.connect(function (err) {
+            if (err) {
+                console.log(err)
+                c.end()
+                return res.jsonp({ Res: false })
+            }
+            c.query(`SELECT id, nombre_completo, dpi, foto, correo FROM usuarios WHERE correo != '${correo}'`, async function (err, result, field) {
+                if (err) {
+                    console.log(err)
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+
+                return res.jsonp({ Res: true, usuarios: result })
+            })
+
+        })
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
+}
+
+exports.addfriend = async (req, res) => {
+    const data = req.body;
     let correo_usr = "";
     let correo_amigo_usr = data.correo_amigo;
 
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            console.log("hubo un error en la decodificacion")
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo;
-        // correo_amigo_usr = decodedToken.Correo_amigo;
-    });
-    console.log(correo_usr, correo_amigo_usr)
     try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                console.log("hubo un error en la decodificacion")
+                return res.jsonp({ Res: false })
+            }
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
+            // correo_amigo_usr = decodedToken.Correo_amigo;
+        });
+        console.log(correo_usr, correo_amigo_usr)
         let c = mysql.createConnection(config)
         c.connect(function (err) {
             if (err) {
@@ -752,7 +857,82 @@ exports.addfriend = async (req, res) => {
     }
 }
 
-exports.getfriends = async (req, res) => {
+exports.updatestateFriend = async (req, res) => {
+    const data = req.body;
+    let correo_amigo_usr = data.correo_amigo;
+    let correo_usr = "";
+    try {
+        jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
+            if (err) { //Verificando que no haya errores
+                console.log("hubo un error en la decodificacion")
+                return res.jsonp({ Res: false })
+                // Obtener información del usuario del payload del token
+                // correo = decodedToken.Correo;
+            }
+            correo_usr = decodedToken.Correo;
+        });
+        console.log("DATOS: ", correo_usr, " amigo: ", correo_amigo_usr)
+        let c = mysql.createConnection(config)
+        c.connect(function (err) {
+            if (err) {
+                console.log(err)
+                c.end()
+                return res.jsonp({ Res: false })
+            }
+            c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}' OR correo ='${correo_amigo_usr}';`, async function (err, result, field) {
+
+                if (err) {
+                    console.log(err)
+                    c.end()
+                    return res.jsonp({ Res: false })
+                }
+
+                // console.log("HERE IS DIE", result)
+
+                if (result.length != 2) {
+                    console.log("no existe alguno de los usuarios")
+                    c.end()
+                    return res.jsonp({ Res: false })
+                } else {
+                    let id_usr;
+                    let id_amigo_usr;
+                    for (let i = 0; i < result.length; i++) {
+                        const element = result[i];
+                        if (element.correo == correo_usr) {
+                            id_usr = element.id;
+                        }
+                        if (element.correo == correo_amigo_usr) {
+                            id_amigo_usr = element.id;
+                        }
+                    }
+
+
+                    c.query(`UPDATE amigos
+                    SET state = 1
+                    WHERE (amigos.id = ${id_usr} and amigos.usuarios_id = ${id_amigo_usr})OR (amigos.id = ${id_amigo_usr} and amigos.usuarios_id = ${id_usr});`, async function (err, result, field) {
+                        if (err) {
+                            console.log(err)
+                            c.end()
+                            return res.jsonp({ Res: false })
+                        }
+
+                        //console.log(result)
+
+                        return res.jsonp({ Res: true })
+                    })
+                }
+
+
+            })
+        })
+    } catch (e) {
+        console.log("e")
+        console.log(e)
+        res.jsonp({ Res: false })
+    }
+}
+
+exports.getsolicitudes = async (req, res) => {
     const data = req.params;
     let correo_usr = "";
     console.log(data)
@@ -784,9 +964,11 @@ exports.getfriends = async (req, res) => {
                 let id_usr = result[0].id;
 
 
-                c.query(`SELECT amigos.id as id1, us.nombre_completo as nombre1, u.dpi as dpi1, u.foto as foto1, u.correo as correo1, amigos.state, amigos.usuarios_id as id2, u.nombre_completo as nombre2, u.dpi as dpi2, u.foto as foto2, u.correo as correo2 
-                FROM ((amigos inner join usuarios as us on us.id = amigos.id ) inner join usuarios as u on u.id = amigos.usuarios_id)
-                WHERE amigos.usuarios_id = ${id_usr} OR amigos.id = ${id_usr} `, async function (err, result, field) {
+                c.query(`SELECT amigos.id as id1, us.nombre_completo as nombre1, us.dpi as dpi1,  us.foto as foto1, us.correo as correo1, amigos.state, 
+                amigos.usuarios_id as id2, u.nombre_completo as nombre2, u.dpi as dpi2, u.foto as foto2, u.correo as correo2 
+                FROM ((amigos inner join usuarios as us on us.id = amigos.id) 
+                    inner join usuarios as u on u.id = amigos.id)
+                WHERE amigos.usuarios_id = ${id_usr} AND amigos.state = 0; `, async function (err, result, field) {
                     if (err) {
                         console.log(err)
                         c.end()
@@ -798,13 +980,14 @@ exports.getfriends = async (req, res) => {
                     for (let i = 0; i < result.length; i++) {
                         const element = result[i];
                         if (element.id1 == id_usr) {
-                            lista.push({ id: element.id1, nombre: element.nombre1, dpi: element.dpi1, foto: element.foto1, correo: element.correo1, state: element.state })
-                        } else if (element.id2 == id_usr) {
                             lista.push({ id: element.id2, nombre: element.nombre2, dpi: element.dpi2, foto: element.foto2, correo: element.correo2, state: element.state })
+                        } else if (element.id2 == id_usr) {
+                            lista.push({ id: element.id1, nombre: element.nombre1, dpi: element.dpi1, foto: element.foto1, correo: element.correo1, state: element.state })
                         }
                     }
+                    console.log("GET SOLICITUDES", lista)
 
-                    return res.jsonp({ Res: true, amigos: lista })
+                    return res.jsonp({ Res: true, solicitudes: lista })
                 })
 
             })
@@ -815,121 +998,6 @@ exports.getfriends = async (req, res) => {
         res.jsonp({ Res: false })
     }
 }
-
-exports.getallusers = async (req, res) => {
-    const data = req.params;
-    let correo = "";
-
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            console.log("hubo un error en la decodificacion")
-            return res.jsonp({ Res: false })
-        }
-        // Obtener información del usuario del payload del token
-        correo = decodedToken.Correo;
-    });
-
-    try {
-        let c = mysql.createConnection(config)
-        c.connect(function (err) {
-            if (err) {
-                console.log(err)
-                c.end()
-                return res.jsonp({ Res: false })
-            }
-            c.query(`SELECT id, nombre_completo, dpi, foto, correo FROM usuarios WHERE correo != '${correo}'`, async function (err, result, field) {
-                if (err) {
-                    console.log(err)
-                    c.end()
-                    return res.jsonp({ Res: false })
-                }
-
-                return res.jsonp({ Res: true, usuarios: result })
-            })
-
-        })
-    } catch (e) {
-        console.log("e")
-        console.log(e)
-        res.jsonp({ Res: false })
-    }
-}
-
-exports.updatestateFriend = async (req, res) => {
-    const data = req.params;
-    let correo_usr = data.correo;
-    let correo_amigo_usr = data.correo_amigo;
-
-    jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
-        if (err) { //Verificando que no haya errores
-            console.log("hubo un error en la decodificacion")
-            return res.jsonp({ Res: false })
-            // Obtener información del usuario del payload del token
-            correo_usr = decodedToken.Correo;
-        }
-    });
-
-    try {
-        let c = mysql.createConnection(config)
-        c.connect(function (err) {
-            if (err) {
-                console.log(err)
-                c.end()
-                return res.jsonp({ Res: false })
-            }
-            c.query(`SELECT * from usuarios WHERE correo ='${correo_usr}' OR correo ='${correo_amigo_usr}';`, async function (err, result, field) {
-
-                if (err) {
-                    console.log(err)
-                    c.end()
-                    return res.jsonp({ Res: false })
-                }
-
-                console.log(result)
-
-                if (result.length != 2) {
-                    console.log("no existe alguno de los usuarios")
-                    c.end()
-                    return res.jsonp({ Res: false })
-                } else {
-                    let id_usr;
-                    let id_amigo_usr;
-                    for (let i = 0; i < result.length; i++) {
-                        const element = result[i];
-                        if (element.correo == correo_usr) {
-                            id_usr = element.id;
-                        }
-                        if (element.correo == correo_amigo_usr) {
-                            id_amigo_usr = element.id;
-                        }
-                    }
-
-
-                    c.query(`UPDATE amigos
-                    SET state = 1
-                    WHERE amigos.id = ${id_usr} and amigos.usuarios_id = ${id_amigo_usr};`, async function (err, result, field) {
-                        if (err) {
-                            console.log(err)
-                            c.end()
-                            return res.jsonp({ Res: false })
-                        }
-
-                        //console.log(result)
-
-                        return res.jsonp({ Res: true })
-                    })
-                }
-
-
-            })
-        })
-    } catch (e) {
-        console.log("e")
-        console.log(e)
-        res.jsonp({ Res: false })
-    }
-}
-
 var dict = {};
 
 exports.sendmessage = async (req, res) => {
