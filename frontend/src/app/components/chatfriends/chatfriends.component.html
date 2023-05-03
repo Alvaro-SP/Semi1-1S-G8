@@ -1,12 +1,14 @@
-<app-barra-superior></app-barra-superior>
+<app-barra-navegacion></app-barra-navegacion>
 <div id="container">
+
     <aside>
         <header>
             <input type="text" placeholder="search">
         </header>
         <h2>Amigos</h2>
         <ul>
-            <li *ngFor="let friend of friends">
+            <!-- here i have an for to generate all the friends of the user, and clicked to show the messages -->
+            <li *ngFor="let friend of friends" attr.id="{{ friend.id }}" (click)="onFriendClick(friend.id)">
                 <img [src]="friend.imageName" alt="">
                 <div>
                     <h2>{{ friend.name }}</h2>
@@ -20,9 +22,9 @@
     </aside>
     <div class="main2">
         <header>
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="">
+            <img src="{{ photoChat }}" alt="">
             <div>
-                <h2>Chat with Vincent Porter</h2>
+                <h2>Chat with: {{ nameChat }}</h2>
                 <h3>already 1902 messages</h3>
             </div>
             <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png" alt="">
@@ -54,62 +56,14 @@
         <h2>Usuarios dentro del Sistema</h2>
         <a (click)="local1()" type="submit">USER1</a>
         <a (click)="local2()" type="submit">USER2</a>
+        <!--! ENLISTAR LOS USUARIOS DEL SISTEMA -->
         <ul class="user-list">
             <li>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 1" />
-                    <h2>User 1</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                    <!-- (click)=""  -->
-                </div>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 2">
-                    <h2>User 2</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-            </li>
-            <li>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 3">
-                    <h2>User 3</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 4">
-                    <h2>User 4</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-            </li>
-            <li>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 3">
-                    <h2>User 3</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 4">
-                    <h2>User 4</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-            </li>
-            <li>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 3">
-                    <h2>User 3</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
-                </div>
-                <div class="user-card">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg" alt="User 4">
-                    <h2>User 4</h2>
-                    <h3>Nombre COmpleto</h3>
-                    <button>Agregar amigo</button>
+                <div class="user-card" *ngFor="let usuario of allusers">
+                    <img src="{{ usuario.foto }}" alt="{{ usuario.nombre_completo }}" />
+                    <h2>{{ usuario.nombre_completo }}</h2>
+                    <h3>{{ usuario.correo }}</h3>
+                    <button (click)="enviarSolicitud(usuario.id)">Agregar amigo</button>
                 </div>
             </li>
         </ul>

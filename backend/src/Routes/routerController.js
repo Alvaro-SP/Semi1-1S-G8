@@ -14,6 +14,7 @@ router.get("/obtenerComentarios/:publicacion", control.obtenerComentarios)
 router.post("/traducir", control.traducir)
 router.get("/obtenerUsuario2/:usuario", control.obtenerUsuario2)
 router.put("/actualizarPerfil", control.EditarUsuario)
+
 router.post("/addfriend/:usuario", control.addfriend)
 router.get("/getfriends/:usuario", control.getfriends)
 router.get("/getallusers/:usuario", control.getallusers)
