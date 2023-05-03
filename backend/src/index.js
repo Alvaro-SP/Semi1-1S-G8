@@ -57,6 +57,12 @@ io.on('connection', (socket) => {
         console.log(idEncontrado)
         io.to(idEncontrado).emit('message', data);
     });
+    // SHOW A NOTIFICATION OF FRIEND REQUEST
+    socket.on('friendRequest', (data) => {
+        const recipientid = data.recipientid;
+        let idEncontrado = users[recipientid]
+        io.to(idEncontrado).emit('friendRequest', data);
+    });
     // DISCONNECT
     socket.on('disconnect', () => {
         console.log('usuario desconectado');

@@ -672,7 +672,7 @@ exports.EditarUsuario = async (req, res) => {
 exports.addfriend = async (req, res) => {
     const data = req.params;
     let correo_usr = "";
-    let correo_amigo_usr = "";
+    let correo_amigo_usr = data.correo_amigo;
 
     jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
         if (err) { //Verificando que no haya errores
@@ -681,7 +681,7 @@ exports.addfriend = async (req, res) => {
         }
         // Obtener información del usuario del payload del token
         correo_usr = decodedToken.Correo;
-        correo_amigo_usr = decodedToken.Correo_amigo;
+        // correo_amigo_usr = decodedToken.Correo_amigo;
     });
     console.log(correo_usr, correo_amigo_usr)
     try {
@@ -780,7 +780,7 @@ exports.getfriends = async (req, res) => {
                     return res.jsonp({ Res: false })
                 }
 
-
+                console.log("RESULT****", result)
                 let id_usr = result[0].id;
 
 
@@ -857,17 +857,16 @@ exports.getallusers = async (req, res) => {
 
 exports.updatestateFriend = async (req, res) => {
     const data = req.params;
-    let correo_usr = "";
-    let correo_amigo_usr = "";
+    let correo_usr = data.correo;
+    let correo_amigo_usr = data.correo_amigo;
 
     jwt.verify(data.usuario, 'clave-secreta', (err, decodedToken) => {
         if (err) { //Verificando que no haya errores
             console.log("hubo un error en la decodificacion")
             return res.jsonp({ Res: false })
+            // Obtener información del usuario del payload del token
+            correo_usr = decodedToken.Correo;
         }
-        // Obtener información del usuario del payload del token
-        correo_usr = decodedToken.Correo_amigo;
-        correo_amigo_usr = decodedToken.Correo;
     });
 
     try {
