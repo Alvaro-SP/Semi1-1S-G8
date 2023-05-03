@@ -51,7 +51,7 @@ export class BackendService {
   }
   
   addfriend(usuario:any){
-    return this.http.post(`${this.URL}/addfriend/${usuario}`, usuario);
+    return this.http.post(`${this.URL}/addfriend`, usuario);
   }
 
   getfriends(usuario:any){
@@ -62,11 +62,15 @@ export class BackendService {
     return this.http.get(`${this.URL}/getallusers/${usuario}`);
   }
 
-  aceptarAmigo(usuario:any){
-    return this.http.put(`${this.URL}/aceptarAmigo`,usuario);
+  aceptarAmigo(cuerpo:any){
+    return this.http.post(`${this.URL}/aceptarAmigo`,cuerpo);
   }
 
   sendmessageBot(cuerpo:any){
     return this.http.post(`${this.URL}/sendmessageBot`,cuerpo);
+  }
+
+  getsolicitudes(usuario:any){
+    return this.http.get(`${this.URL}/getsolicitudes/${usuario}`);
   }
 }

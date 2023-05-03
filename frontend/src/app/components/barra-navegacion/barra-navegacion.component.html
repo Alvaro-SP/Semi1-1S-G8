@@ -55,19 +55,17 @@
 
     <ul id="chat">
       <!--! ENLISTAR MENSAJES -->
-      <ng-container *ngFor="let msg of items">
-        <li [ngClass]="{'me': !msg.bot, 'you': msg.bot}">
-          <div class="entete">
-            <span class="status green"></span>
-            <h2>{{msg.bot ? 'Botsito' : 'Grupo 8'}}</h2>
-            <h3>{{msg.bot ? 'a few moments ago' : 'Now, Today'}}</h3>
-          </div>
-          <div class="triangle"></div>
-          <div class="message">
-            {{msg.message}}
-          </div>
-        </li>
-      </ng-container>
+      <li [ngClass]="{'me': !msg.bot, 'you': msg.bot}" *ngFor="let msg of items">
+        <div class="entete">
+          <span class="status green"></span>
+          <h2>{{msg.bot ? 'Botsito' : 'Grupo 8'}}</h2>
+          <h3>{{msg.bot ? 'a few moments ago' : 'Now, Today'}}</h3>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          {{msg.message}}
+        </div>
+      </li>
     </ul>
     <footer>
       <textarea placeholder="Type your message" [(ngModel)]="this.cuerpo.message"></textarea>

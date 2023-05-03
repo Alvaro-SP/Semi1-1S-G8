@@ -69,10 +69,11 @@ h3 {
   margin: 0;
 }
 aside li img {
-  border-radius: 50%;
+  border-radius: 350%;
   margin-left: 20px;
   margin-right: 8px;
-  max-width: 70px;
+  height: 70px;
+  width: 70px;
 }
 aside li div {
   display: inline-block;
@@ -120,6 +121,8 @@ aside li h3 {
 }
 .main2 header img:first-child {
   border-radius: 50%;
+  width: 50px;
+  height: 50px;
 }
 .main2 header img:last-child {
   width: 24px;
@@ -321,6 +324,18 @@ aside li h3 {
   margin-left: 10px;
   margin-top: 10px;
   align-items: center;
+}
+.botonarriba {
+  background-color: #b35c05;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  font-size: 0.9rem;
+  margin: 10px auto 0;
+  padding: 5px 10px;
+  transition: background-color 0.3s ease;
 }
 aside h2 {
   font-size: 20px;
