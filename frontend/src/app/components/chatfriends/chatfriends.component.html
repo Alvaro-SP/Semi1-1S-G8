@@ -1,0 +1,93 @@
+<app-barra-navegacion></app-barra-navegacion>
+<div id="container">
+
+    <aside>
+        <header>
+            <input type="text" placeholder="search">
+        </header>
+        <h2>Amigos</h2>
+        <ul>
+            <ng-container *ngFor="let f of friends">
+                <!-- here i have an for to generate all the friends of the user, and clicked to show the messages -->
+                <li id="f.id" (click)="onFriendClick(f.id)">
+                    <img [src]="f.foto" alt="">
+                    <div>
+                        <h2>{{ f.nombre }}</h2>
+                        <h3>
+                            <span class="status" [class.online]="" [class.offline]=""></span>
+                            online
+                        </h3>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+    </aside>
+    <div class="main2">
+        <header>
+            <img src="{{ photoChat }}" alt="">
+            <div>
+                <h2>Chat with: {{ nameChat }}</h2>
+                <h3>already messages</h3>
+            </div>
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png" alt="">
+        </header>
+        <ul id="chat" #messagesList>
+            <!--! ENLISTAR MENSAJES -->
+            <ng-container *ngFor="let msg of items">
+                <li [ngClass]="{'me': !msg.bot, 'you': msg.bot, 'message-animation': hasNewMessage}">
+                    <div class="entete">
+                        <span class="status green"></span>
+                        <h2>{{msg.bot ? 'Botsito' : 'Grupo 8'}}</h2>
+                        <h3>{{msg.bot ? 'a few moments ago' : 'Now, Today'}}</h3>
+                    </div>
+                    <div class="triangle"></div>
+                    <div class="message">
+                        {{msg.message}}
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+        <footer>
+            <textarea placeholder="Type your message" [(ngModel)]="this.messageText"></textarea>
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_picture.png" alt="">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png" alt="">
+            <a (click)="SendMessage()" type="submit">Send</a>
+        </footer>
+    </div>
+    <aside class="amikos" *ngIf="showAside">
+        <button class="botonarriba" (click)="obtenerSolicitudes()">Solicitudes de Amistad</button>
+        <h2>Usuarios dentro del Sistema</h2>
+        <!-- <a (click)="local1()" type="submit">USER1</a>
+        <a (click)="local2()" type="submit">USER2</a> -->
+        <!--! ENLISTAR LOS USUARIOS DEL SISTEMA -->
+        <ul class="user-list">
+            <li>
+                <div class="user-card" *ngFor="let usuario of allusers">
+                    <img src="{{ usuario.foto }}" alt="{{ usuario.nombre_completo }}" />
+                    <h2>{{ usuario.nombre_completo }}</h2>
+                    <h3>{{ usuario.correo }}</h3>
+                    <button (click)="enviarSolicitud(usuario.correo)">Agregar amigo</button>
+                </div>
+            </li>
+        </ul>
+
+
+    </aside>
+    <aside *ngIf="!showAside">
+        <button class="botonarriba" (click)="toggleAside()">Usuarios</button>
+        <h2>Solicitudes de Amistad</h2>
+        <ul>
+            <ng-container *ngFor="let f of solicitudes">
+                <!-- here i have an for to generate all the friends of the user, and clicked to show the messages -->
+                <li id="f.id">
+                    <img [src]="f.foto" alt="">
+                    <div>
+                        <h2>{{ f.nombre }} Te ha enviado una solicitud</h2>
+                        <h2> de Amistad.</h2>
+                    </div>
+                    <button (click)="aceptarAmigo(f.correo)">Aceptar</button>
+                </li>
+            </ng-container>
+        </ul>
+    </aside>
+</div>
