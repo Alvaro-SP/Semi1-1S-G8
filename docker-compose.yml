@@ -15,7 +15,8 @@ services:
     volumes:
       - ./db/script.sql:/docker-entrypoint-initdb.d/script.sql
       - mysql-semi:/var/lib/mysql  
-
+    networks:
+      - app_net
 ############## API ##################
 
   apisemi:
@@ -31,9 +32,27 @@ services:
       - MYSQL_HOSTNAME=dbmysqlsemi
       - MYSQL_PORT=3306
     ports:
-      - "80:4000"
+      - "4000:4000"
     depends_on:
       - dbmysqlsemi
+    networks:
+      - app_net
+############## FRONTEND ##################
+  frontend:
+    image: 'alvarosp24/semi_frontend'
+    container_name: 'semi_frontend'
+    environment:
+      REACT_APP_PUERTO: "localhost" #localhost
+    ports:
+      - '80:4200' #del no de hub al mio
+    restart: always
+    depends_on:
+      - apisemi
 
 volumes:
   mysql-semi:
+
+
+networks:
+  app_net:
+    driver: bridge
